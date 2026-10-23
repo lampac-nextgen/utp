@@ -579,6 +579,9 @@ func (s *Socket) ReadFrom(p []byte) (n int, addr net.Addr, err error) {
 	case <-s.connDeadlines.read.passed.LockedChan(&mu):
 		err = errTimeout
 		return
+	case <-s.destroyed.LockedChan(&mu):
+		err = net.ErrClosed
+		return
 	}
 }
 
